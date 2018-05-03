@@ -10,6 +10,8 @@ Published computational analyses and scripts for the following manuscript:
 
 - **BG4 ChIP-seq in K562 cells**
   - Read processing, mapping and peak calling
+  - CPG Islands
+  - Methylation analysis
   - Enrichment analysis
   - Monte Carlo simulation
   
