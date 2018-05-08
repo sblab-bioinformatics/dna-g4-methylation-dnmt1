@@ -59,3 +59,36 @@ do
   bismark --non_directional --unmapped -p 8 --gzip -o ../bismark_se --temp_dir ~/tmp $ref $fq
 done
 ```
+
+
+### Deduplication
+
+The paired-end alignments were deduplicated using `deduplicate_bismark` as follows:
+
+```bash
+cd bismark
+
+for id in SLX-14400_S1 SLX-14400_S2 SLX-14400_S3 SLX-14400_S4
+do
+  bams=`echo ${id}_L00[1-4]_R1_001_bismark_bt2_pe.bam`
+  deduplicate_bismark -p --output_dir . --bam --multiple $bams
+done
+```
+
+The single-end alignments were deduplicated as:
+
+```bash
+cd bismark_se
+
+for id in SLX-14400_S1 SLX-14400_S2 SLX-14400_S3 SLX-14400_S4
+do
+  bams=`echo ${id}_L00[1-4]_R[1-2]_001.fastq.gz_unmapped_reads_[1-2]_bismark_bt2.bam`
+  deduplicate_bismark -s --output_dir . --bam --multiple $bams
+done
+```
+
+
+
+
+
+
