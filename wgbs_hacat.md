@@ -61,7 +61,7 @@ done
 ```
 
 
-### Deduplication
+### De-duplication
 
 The paired-end alignments were deduplicated using `deduplicate_bismark` as follows:
 
