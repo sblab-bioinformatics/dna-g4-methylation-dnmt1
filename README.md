@@ -16,7 +16,7 @@ Published computational analyses and scripts for the following manuscript:
   
 - [**Whole genome bisulfite sequencing in HaCaT cells**](wgbs_hacat.md)
   - [Read processing, alignment and de-duplication](wgbs_hacat.md#read-processing-alignment-and-de-duplication)
-  - Methylation extraction, merging and filter by coverage
+  - [Methylation extraction, aggregation and filter by coverage](wgbs_hacat.md#methylation-extraction-aggregation-and-filter-by-coverage)
   - CpG Islands
   - Analysis of methylation changes in BG4 ChIP-Seq peaks, CGIs and promoters before and after Entinostat treatment 
   
