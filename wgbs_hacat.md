@@ -4,6 +4,12 @@
 - [bismark v0.19.0](https://github.com/FelixKrueger/Bismark)
 - [R v3.3.2](https://www.r-project.org/)
   - [data.table v1.10.4](https://cran.r-project.org/web/packages/data.table/index.html)
+  - [GenomicFeatures v1.26.4](https://bioconductor.org/packages/release/bioc/html/GenomicFeatures.html)
+- [python v2.7.12](https://www.python.org/)
+- [fastaRegexFinder.py](https://github.com/dariober/bioinformatics-cafe/blob/master/fastaRegexFinder.py)
+- [bedtools v2.27.0](http://bedtools.readthedocs.io/en/latest/)
+- [pigz v2.3.4](https://zlib.net/pigz/)
+- [bedGraphToBigWig v4](https://www.encodeproject.org/software/bedgraphtobigwig/)
 
 
 
@@ -201,3 +207,193 @@ gz <- gzfile("merge_all_2/treated.bismark.cov.gz", "w")
 write.table(treated_data_aggregate, gz, row.names = FALSE, col.names = TRUE, sep = '\t', quote = FALSE)
 close(gz)
 ```
+
+#### Collapse counts to CpG sites
+
+Obtain all CpG sites in hg19:
+
+```bash
+mkdir cpg_sites
+cd cpg_sites
+
+ref=../reference/genome.fa
+fastaRegexFinder.py -f $ref -r CG --noreverse | cut -f1-3 | grep "^chr" | bedtools sort -i | awk -v OFS="\t" '$3 = $3 - 1' | pigz > hg19.allCpG.bed.gz
+
+zcat hg19.allCpG.bed.gz | wc -l # 28217448 CpGs, 56434896 Cs and Gs in CpGs
+```
+
+Intersect with `treated.bismark.cov.gz` and `untreated.bismark.cov.gz`:
+
+```bash
+cd ../merge_all_2
+
+bedtools intersect -a <(zcat ../cpg_sites/hg19.allCpG.bed.gz) -b <(zcat treated.bismark.cov.gz | tail -n +2) -sorted -wa -wb | \
+bedtools merge -i - -c 7,8 -o sum,sum | \
+pigz > treated.collapse.bed.gz
+
+bedtools intersect -a <(zcat ../cpg_sites/hg19.allCpG.bed.gz) -b <(zcat untreated.bismark.cov.gz | tail -n +2) -sorted -wa -wb | \
+bedtools merge -i - -c 7,8 -o sum,sum | \
+pigz > untreated.collapse.bed.gz
+
+zcat treated.collapse.bed.gz | wc -l # 1x, 26686940 (95%)
+zcat treated.collapse.bed.gz | awk '$4+$5 > 4' | wc -l # 5x, 22546472 (80%)
+zcat treated.collapse.bed.gz | awk '$4+$5 > 9' | wc -l # 10x, 16534935 (59%)
+
+zcat untreated.collapse.bed.gz | wc -l # 1x, 26692320 (95%)
+zcat untreated.collapse.bed.gz | awk '$4+$5 > 4' | wc -l # 5x, 22670454 (80%)
+zcat untreated.collapse.bed.gz | awk '$4+$5 > 9' | wc -l # 10x, 17044566 (60%)
+```
+
+Continue with 5x. Intersect `treated.collapse.bed.gz` and `untreated.collapse.bed.gz` at 5x coverage of individual CG sites to generate a consensus file containing CG sites in common to both conditions.
+
+```bash
+bedtools intersect -a <(zcat treated.collapse.bed.gz | awk -v OFS="\t" '$4+$5 > 4') -b <(zcat untreated.collapse.bed.gz | awk -v OFS="\t" '$4+$5 > 4') -sorted -wo | cut -f1-5,9-10 | pigz > treated.untreated.collapse.bed.gz
+zcat treated.untreated.collapse.bed.gz | wc -l # 5x, 21106307 (75%) - after intersecting treated and untreated
+
+# the format for each CG site is:
+# <chr>
+# <start>
+# <end>
+# <count_met_treated>
+# <count_unmet_treated>
+# <count_met_untreated>
+# <count_unmet_untreated>
+```
+
+Convert `treated.collapse.bed.gz`, `untreated.collapse.bed.gz` and `treated.untreated.collapse.bed.gz` into BigWig format using `bedGraphToBigWig`:
+
+```bash
+#calculate chrom sizes as defined in bedGraphToBigWig help
+cat ../reference/genome.fa.fai | cut -f1-2 | grep "chr" > ../reference/genome.sizes
+ref=../genome.sizes
+
+#treated.collapse.bed.gz
+zcat treated.collapse.bed.gz | awk -v OFS="\t" '{print $1, $2, $3+1, 100*$4/($4+$5)}' > treated.collapse.bedgraph
+bedGraphToBigWig treated.collapse.bedgraph $ref treated.collapse.bw
+chmod 755 treated.collapse.bw
+rm treated.collapse.bedgraph
+
+#untreated.collapse.bed.gz
+zcat untreated.collapse.bed.gz | awk -v OFS="\t" '{print $1, $2, $3+1, 100*$4/($4+$5)}' > untreated.collapse.bedgraph
+bedGraphToBigWig untreated.collapse.bedgraph $ref untreated.collapse.bw
+chmod 755 untreated.collapse.bw
+rm untreated.collapse.bedgraph
+
+#treated.untreated.collapse.bed.gz "treated"
+zcat treated.untreated.collapse.bed.gz | awk -v OFS="\t" '{print $1, $2, $3+1, 100*$4/($4+$5)}' > treated.collapse.5x.intersection.bedgraph
+bedGraphToBigWig treated.collapse.5x.intersection.bedgraph $ref treated.collapse.5x.intersection.bw
+chmod 755 treated.collapse.5x.intersection.bw
+rm treated.collapse.5x.intersection.bedgraph
+
+#treated.untreated.collapse.bed.gz "untreated"
+zcat treated.untreated.collapse.bed.gz | awk -v OFS="\t" '{print $1, $2, $3+1, 100*$6/($6+$7)}' > untreated.collapse.5x.intersection.bedgraph
+bedGraphToBigWig untreated.collapse.5x.intersection.bedgraph $ref untreated.collapse.5x.intersection.bw
+chmod 755 untreated.collapse.5x.intersection.bw
+rm untreated.collapse.5x.intersection.bedgraph
+```
+
+Remember, the above BigWig files are % methylation considering CpG sites as individual units.
+
+
+
+## Analysis of methylation changes in BG4 ChIP-Seq peaks, CGIs and promoters before and after Entinostat treatment
+
+The following files were obtained from Figure 2d in [PMID: 27618450](https://www.nature.com/articles/ng.3662):
+
+- 2d_ATAC+_OQS+_G4-.csv
+- 2d_ATAC+_OQS+_G4ChIP+.csv
+- 2d_ATAC+_OQS+_G4ChIP++.csv
+
+Click [here](https://media.nature.com/original/nature-assets/ng/journal/v48/n10/source_data/ng.3662-f2.xls) to download Figure 2d data.
+
+```r
+library(data.table)
+library(GenomicFeatures)
+
+# Load data from the paper
+ATACp_OQSp_G4m <- data.table(read.csv("genes/2d_ATAC+_OQS+_G4-.csv"))
+nrow(ATACp_OQSp_G4m) # 1734
+ATACp_OQSp_G4m[, id := "ATACp_OQSp_G4m"]
+
+ATACp_OQSp_G4ChIPp <- data.table(read.csv("genes/2d_ATAC+_OQS+_G4ChIP+.csv"))
+nrow(ATACp_OQSp_G4ChIPp) # 3627
+ATACp_OQSp_G4ChIPp[, id := "ATACp_OQSp_G4p"]
+
+ATACp_OQSp_G4ChIPpp <- data.table(read.csv("genes/2d_ATAC+_OQS+_G4ChIP++.csv"))
+nrow(ATACp_OQSp_G4ChIPpp) # 373
+ATACp_OQSp_G4ChIPpp[, id := "ATACp_OQSp_G4pp"]
+
+paper_tables <- rbindlist(list(ATACp_OQSp_G4m, ATACp_OQSp_G4ChIPp, ATACp_OQSp_G4ChIPpp))
+
+# Prepare tss coordinates
+txdb <- makeTxDbFromGFF("reference/genes.gtf", format="gtf")
+genes_coords <- data.table(as.data.frame(genes(txdb)))
+tss_1000_coords <- genes_coords[, .(chr = seqnames, start = ifelse(strand == "+", start - 1000, end - 1000), end = ifelse(strand == "+", start + 1000, end + 1000), gene_name = gene_id)]
+
+# Merge
+paper_tables_tss_1000_coords <- merge(paper_tables, tss_1000_coords, all.x = TRUE, by.x = "gene_id", by.y = "gene_name")
+write.table(paper_tables_tss_1000_coords[!is.na(chr)][,.(chr, start, end, gene_id, logFC, FDR, id)], file = "genes/tss.bed", row.names = FALSE, col.names = FALSE, sep = '\t', quote = FALSE)
+```
+
+Obtain TSSs overlapping with CGIs (obtained from UCSC's cpgIslandExt.txt.gz table):
+
+```bash
+cd merge_all_2
+
+zcat ../cpgi/cpgIslandExt.txt.gz | cut -f2-4 | tail -n +2 | bedtools sort -i > ../cpgi/cpgIslandExt.bed
+wc -l ../cpgi/cpgIslandExt.bed # 28691
+
+grep -v "_" ../cpgi/cpgIslandExt.bed > ../cpgi/cpgIslandExt_norandom.bed
+
+cd ../genes
+
+bedtools intersect \
+-a tss.bed \
+-b ../cpgi/cpgIslandExt_norandom.bed \
+-wa -u > tss.cgi.bed
+
+wc -l tss.cgi.bed # 5072
+```
+
+Obtain CpG sites located within the TSS regions obtained above:
+
+```bash
+cd merge_all_2
+
+bedtools intersect \
+-a <(zcat treated.untreated.collapse.bed.gz) \
+-b <(bedtools sort -i ../genes/tss.cgi.bed) \
+-sorted -wa -u | wc -l # 444526 CpG sites
+
+bedtools intersect \
+-a <(zcat treated.untreated.collapse.bed.gz) \
+-b <(bedtools sort -i ../genes/tss.cgi.bed) \
+-sorted -wb | cut -f8-10 | sort | uniq -c | wc -l # 5070 gene TSSs
+
+# 444526 CpG sites overlap with 5070 gene TSSs.
+
+bedtools intersect \
+-a <(zcat treated.untreated.collapse.bed.gz) \
+-b <(bedtools sort -i ../genes/tss.cgi.bed) \
+-sorted -wao | cut -f1-14 | pigz > treated.untreated.collapse.tss.cgi.bed.gz
+
+zcat treated.untreated.collapse.tss.cgi.bed.gz | wc -l # 21148404
+
+# the format for each CpG site in treated.untreated.collapse.tss.bed.gz is:
+# <chr>
+# <start>
+# <end>
+# <count_met_treated>
+# <count_unmet_treated>
+# <count_met_untreated>
+# <count_unmet_untreated>
+# <chr overlapping tss> "." if there is no overlap
+# <start overlapping tss> "-1" if there is no overlap
+# <end overlapping tss> "-1" if there is no overlap
+# <gene_id overlapping tss> "." if there is no overlap
+# <logFC overlapping tss> "." if there is no overlap
+# <FDR overlapping tss> "." if there is no overlap
+# <group_id overlapping tss> "." if there is no overlap
+```
+
+https://github.com/sblab-bioinformatics/projects/blob/master/20170817_Shiqing_DNMT_G4/20180410_merge_analysis.md#genes-
