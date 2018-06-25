@@ -7,7 +7,7 @@ Published computational analyses and scripts for the following manuscript:
 
 ### Contents
 
-- **BG4 ChIP-seq in K562 cells**, following [this](https://github.com/sblab-bioinformatics/dna-secondary-struct-chrom-lands/blob/master/Methods.md)
+- **BG4 ChIP-seq in K562 cells**, following our [previous work](https://github.com/sblab-bioinformatics/dna-secondary-struct-chrom-lands/blob/master/Methods.md)
   - Read processing, mapping and peak calling
   - CPG Islands
   - Methylation analysis
