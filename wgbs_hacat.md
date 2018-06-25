@@ -5,6 +5,7 @@
 - [R v3.3.2](https://www.r-project.org/)
   - [data.table v1.10.4](https://cran.r-project.org/web/packages/data.table/index.html)
   - [GenomicFeatures v1.26.4](https://bioconductor.org/packages/release/bioc/html/GenomicFeatures.html)
+  - [ggplot2 v2.2.1](https://ggplot2.tidyverse.org/)
 - [python v2.7.12](https://www.python.org/)
 - [fastaRegexFinder.py](https://github.com/dariober/bioinformatics-cafe/blob/master/fastaRegexFinder.py)
 - [bedtools v2.27.0](http://bedtools.readthedocs.io/en/latest/)
@@ -396,4 +397,71 @@ zcat treated.untreated.collapse.tss.cgi.bed.gz | wc -l # 21148404
 # <group_id overlapping tss> "." if there is no overlap
 ```
 
-https://github.com/sblab-bioinformatics/projects/blob/master/20170817_Shiqing_DNMT_G4/20180410_merge_analysis.md#genes-
+Analysing `treated.untreated.collapse.tss.cgi.bed.gz` (as generated above) in R,
+
+```r
+library(data.table)
+library(ggplot2)
+
+# Load data
+data <- fread("zcat merge_all_2/treated.untreated.collapse.tss.cgi.bed.gz")
+colnames(data) <- c("chr_cpg", "start_cpg", "end_cpg", "cnt_met_treated", "cnt_unmet_treated", "cnt_met_untreated", "cnt_unmet_untreated", "chr_tss", "start_tss", "end_tss", "gene_tss", "logFC_tss", "FDR_tss", "id_tss")
+
+# Calculate pct_met for each CpG and diff
+data[, pct_met_treated := 100*cnt_met_treated/(cnt_met_treated+cnt_unmet_treated)]
+data[, pct_met_untreated := 100*cnt_met_untreated/(cnt_met_untreated+cnt_unmet_untreated)]
+data[, diff := 100*cnt_met_treated/(cnt_met_treated+cnt_unmet_treated) - 100*cnt_met_untreated/(cnt_met_untreated+cnt_unmet_untreated)]
+data[, logFC_tss := as.numeric(data$logFC_tss)]
+
+# Collapse data to TSS taking the sum of methylation counts, average of pct_met_treated, pct_met_untreated and diff across CpG sites, counting how many CpG sites we have for each intersection, then calculated significantly methylated TSSs with a Fisher's test on the counts
+data_tss <- data[chr_tss != "."][, .(cnt_met_treated = sum(cnt_met_treated), cnt_unmet_treated = sum(cnt_unmet_treated), cnt_met_untreated = sum(cnt_met_untreated), cnt_unmet_untreated = sum(cnt_unmet_untreated), pct_met_treated = mean(pct_met_treated), pct_met_untreated = mean(pct_met_untreated), diff = mean(diff), .N), by = .(chr_tss, start_tss, end_tss, gene_tss, logFC_tss, FDR_tss, id_tss)]
+prior <- 0.001
+data_tss[, fc := ((cnt_met_treated/(cnt_met_treated+cnt_unmet_treated))+prior)/((cnt_met_untreated/(cnt_met_untreated+cnt_unmet_untreated))+prior)]
+data_tss[, pval_f := fisher.test(matrix(c(cnt_met_treated, cnt_unmet_treated, cnt_met_untreated, cnt_unmet_untreated), nrow = 2))$p.value, by = 1:nrow(data_tss)]
+data_tss[, pval_f_adj := p.adjust(data_tss$pval_f, method = "BH")]
+
+table(data_tss$id_tss)
+# ATACp_OQSp_G4m  ATACp_OQSp_G4p ATACp_OQSp_G4pp
+#           1504            3261             307
+
+summary(data_tss[, c("logFC_tss", "pct_met_treated", "pct_met_untreated", "diff", "fc", "N")])
+#   logFC_tss        pct_met_treated  pct_met_untreated      diff               fc                N         
+# Min.   :-5.17330   Min.   : 0.000   Min.   : 0.000    Min.   :-7.9049   Min.   :0.07653   Min.   : 11.00  
+# 1st Qu.:-0.44920   1st Qu.: 2.252   1st Qu.: 2.304    1st Qu.:-0.6700   1st Qu.:0.95113   1st Qu.: 76.00  
+# Median :-0.07632   Median : 6.696   Median : 6.834    Median :-0.1450   Median :1.10881   Median : 93.00  
+# Mean   : 0.03388   Mean   : 8.986   Mean   : 9.158    Mean   :-0.1721   Mean   :1.15289   Mean   : 95.94  
+# 3rd Qu.: 0.36178   3rd Qu.:13.046   3rd Qu.:13.348    3rd Qu.: 0.3199   3rd Qu.:1.30202   3rd Qu.:113.00  
+# Max.   : 7.47543   Max.   :76.948   Max.   :76.619    Max.   :15.3822   Max.   :6.27281   Max.   :226.00  
+
+data_tss[id_tss == "ATACp_OQSp_G4m", code := "-\n+\n+"]
+data_tss[id_tss == "ATACp_OQSp_G4p", code := "+\n+\n+"]
+data_tss[id_tss == "ATACp_OQSp_G4pp", code := "++\n+\n+"]
+
+# diff
+gg <- ggplot(data_tss, aes(x = code, y = diff)) +
+geom_hline(yintercept = 0, linetype = "dotted") +
+geom_jitter(colour = 'gray', alpha = 0.35, width = 0.3, size = 0.2) +
+geom_boxplot(outlier.shape=NA, alpha = 0) +
+coord_cartesian(ylim = c(-3, 3)) +
+ylab("% methylation difference (treated - untreated)") +
+xlab("") +
+theme_classic() +
+theme(axis.title=element_text(size=16), axis.text.y=element_text(size=16), axis.text.x=element_text(size=11))
+
+ggsave('figures/20180423_treated.untreated.collapse.tss.cgi.boxplot.diff.gray.png', width = 12, units= 'cm')
+
+mean(data_tss[id_tss == "ATACp_OQSp_G4m"]$diff) # -0.1426609
+mean(data_tss[id_tss == "ATACp_OQSp_G4p"]$diff) # -0.1665028
+mean(data_tss[id_tss == "ATACp_OQSp_G4pp"]$diff) # -0.3763876
+
+wilcox.test(data_tss[id_tss == "ATACp_OQSp_G4pp"]$diff, data_tss[id_tss == "ATACp_OQSp_G4m"]$diff, alternative = "less")$p.value # 0.0003326281
+wilcox.test(data_tss[id_tss == "ATACp_OQSp_G4pp"]$diff, data_tss[id_tss == "ATACp_OQSp_G4p"]$diff, alternative = "less")$p.value # 1.301178e-05
+wilcox.test(data_tss[id_tss == "ATACp_OQSp_G4p"]$diff, data_tss[id_tss == "ATACp_OQSp_G4m"]$diff, alternative = "less")$p.value # 0.5075517
+
+kruskal.test(diff ~ as.factor(id_tss), data = data_tss)$p.value # 0.0002611352
+
+pairwise.wilcox.test(data_tss$diff, data_tss$id_tss, p.adjust.method = "BH")
+#                ATACp_OQSp_G4m ATACp_OQSp_G4p
+#ATACp_OQSp_G4p  0.985          -             
+#ATACp_OQSp_G4pp 0.001          7.8e-05       
+```
