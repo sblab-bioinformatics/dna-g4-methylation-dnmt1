@@ -7,7 +7,7 @@ This repository contains data access and computational analysis for the methods 
 
 All the sequencing data have been deposited in the NCBI GEO database under accession number [GSE107690](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE107690).
 
-### Contents
+### Code
 
 - [**Whole genome bisulfite sequencing in HaCaT cells**](wgbs_hacat.md)
   - [Read processing, alignment and de-duplication](wgbs_hacat.md#read-processing-alignment-and-de-duplication)
