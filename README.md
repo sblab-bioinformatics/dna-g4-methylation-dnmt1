@@ -5,7 +5,7 @@ This repository contains data access and computational analysis for the methods 
 
 ### Data
 
-All the sequencing data have been deposited in the NCBI GEO database under accession number (GSE107690)[https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE107690].
+All the sequencing data have been deposited in the NCBI GEO database under accession number [GSE107690](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE107690).
 
 ### Contents
 
