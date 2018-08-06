@@ -15,3 +15,16 @@ All the sequencing data have been deposited in the NCBI GEO database under acces
   - [Analysis of methylation changes in BG4 ChIP-Seq peaks, CGIs and promoters before and after Entinostat treatment](wgbs_hacat.md#analysis-of-methylation-changes-in-bg4-chip-seq-peaks-cgis-and-promoters-before-and-after-entinostat-treatment)
   
 - **BG4 ChIP-seq in K562 cells**, following our [previous work](https://github.com/sblab-bioinformatics/dna-secondary-struct-chrom-lands/blob/master/Methods.md)
+
+### Tools 
+
+| Tool          | version  | URL (If available)                                             |
+| ------------- |:--------:| --------------------------------------------------------------:|
+| cutadapt      | 1.15     | NA                                                             |
+| BWA           | 0.7.15   | NA                                                             |
+| Picard        | 2.8.3    | http://broadinstitute.github.io/picard                         |
+| MACS          | 2.1.1    | NA                                                             |
+| Bedtools      | 2.26.0   | http://bedtools.readthedocs.io/en/latest/content/overview.html |
+| Deeptools     | 0.7.15   | NA                                                             |
+| Bismark       | 0.19.0   | NA                                                             |
+
