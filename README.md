@@ -23,7 +23,7 @@ CGI were downloaded using the UCSC’s table browser. Also, as an alternative Cp
 - [**Analyses of methylation at promoters and CpG Islands**](Analyses_of_methylation_at_promoters_and_CpG_Islands.md)
 - [**Enrichment analysis**](Enrichment_analysis.md)
 - [**Monte Carlo Simulation**](Monte_Carlo_Simulation.md)
-  - [Monte Carlo P-value calculation](Monte_Carlo_Simulation.md#Monte-Carlo-P-value-calculation)
+  - [Monte Carlo P-value calculation](Monte_Carlo_Simulation.md#Monte-Carlo-P-value-Calculation)
 - [**Whole genome bisulfite sequencing in HaCaT cells**](wgbs_hacat.md)
   - [Read processing, alignment and de-duplication](wgbs_hacat.md#read-processing-alignment-and-de-duplication)
   - [Methylation extraction, aggregation and filter by coverage](wgbs_hacat.md#methylation-extraction-aggregation-and-filter-by-coverage)
