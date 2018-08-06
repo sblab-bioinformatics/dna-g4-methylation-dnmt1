@@ -9,7 +9,7 @@ All the sequencing data have been deposited in the NCBI GEO database under acces
 
 ### Code
 
-- [**BG4 ChIP-seq analysis**] (ChIP-seq_Analysis.md)
+- [**BG4 ChIP-seq analysis**](ChIP-seq_Analysis.md)
 - [**Whole genome bisulfite sequencing in HaCaT cells**](wgbs_hacat.md)
   - [Read processing, alignment and de-duplication](wgbs_hacat.md#read-processing-alignment-and-de-duplication)
   - [Methylation extraction, aggregation and filter by coverage](wgbs_hacat.md#methylation-extraction-aggregation-and-filter-by-coverage)
