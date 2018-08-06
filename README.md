@@ -18,13 +18,13 @@ All the sequencing data have been deposited in the NCBI GEO database under acces
 
 ### Tools 
 
-| Tool          | version  | URL (If available)                                             |
-| ------------- |:--------:| --------------------------------------------------------------:|
-| cutadapt      | 1.15     | NA                                                             |
-| BWA           | 0.7.15   | NA                                                             |
-| Picard        | 2.8.3    | http://broadinstitute.github.io/picard                         |
-| MACS          | 2.1.1    | NA                                                             |
-| Bedtools      | 2.26.0   | http://bedtools.readthedocs.io/en/latest/content/overview.html |
-| Deeptools     | 0.7.15   | NA                                                             |
-| Bismark       | 0.19.0   | NA                                                             |
+|Tool           | version  | URL (If available)                                            |
+| ------------- |:--------:| -------------------------------------------------------------:|
+| cutadapt      | 1.15     |NA                                                             |
+| BWA           | 0.7.15   |NA                                                             |
+| Picard        | 2.8.3    |http://broadinstitute.github.io/picard                         |
+| MACS          | 2.1.1    |NA                                                             |
+| Bedtools      | 2.26.0   |http://bedtools.readthedocs.io/en/latest/content/overview.html |
+| Deeptools     | 0.7.15   |NA                                                             |
+| Bismark       | 0.19.0   |NA                                                             |
 
