@@ -19,7 +19,7 @@ All the sequencing data have been deposited in the NCBI GEO database under acces
 ### Tools 
 
 |Tool           | version  | URL (If available)                                            |
-| ------------- |:--------:| -------------------------------------------------------------:|
+| ------------- |:--------:| --------------------------------------------------------------|
 | cutadapt      | 1.15     |NA                                                             |
 | BWA           | 0.7.15   |NA                                                             |
 | Picard        | 2.8.3    |http://broadinstitute.github.io/picard                         |
