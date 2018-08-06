@@ -5,7 +5,15 @@ This repository contains data access and computational analysis for the methods 
 
 ### Data
 
-All the sequencing data have been deposited in the NCBI GEO database under accession number [GSE107690](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE107690).
+All in-house the sequencing data have been deposited in the NCBI GEO database under accession number [GSE107690](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE107690). 
+
+[Encode](https://www.encodeproject.org/)'s K562 cell line datasets used are as below: 
+| Dataset       | Data Type                          | URL                                                    |
+| ------------- |:----------------------------------:| -------------------------------------------------------|
+| K562 DHSs     | DNase-seq                          | https://www.encodeproject.org/experiments/ENCSR000EPC/ |
+| K562 DNMT1    | ChIP-seq                           | https://www.encodeproject.org/experiments/ENCSR987PBI/ |
+| K562 WGBS     | whole genome bisulfite sequencing  | https://www.encodeproject.org/experiments/ENCSR765JPC/ |
+
 
 ### Code
 
