@@ -7,7 +7,7 @@ This repository contains data access and computational analysis for the methods 
 
 All in-house the sequencing data have been deposited in the NCBI GEO database under accession number [GSE107690](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE107690). 
 
-**[ENCODE]**(https://www.encodeproject.org/)'s K562 cell line datasets used are as below: 
+[**ENCODE**](https://www.encodeproject.org/)'s K562 cell line datasets used are as below: 
 
 | Dataset       | Data Type                          | URL                                                    |
 | ------------- |:----------------------------------:| -------------------------------------------------------|
