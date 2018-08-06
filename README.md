@@ -21,7 +21,8 @@ CGI were downloaded using the UCSC’s table browser. Also, as an alternative Cp
 
 - [**BG4 ChIP-seq analysis**](ChIP-seq_Analysis.md)
 - [**Analyses of methylation at promoters and CpG Islands**](Analyses_of_methylation_at_promoters_and_CpG_Islands.md)
-- [**Enrishment analysis**](Enrichment_analysis.md)
+- [**Enrichment analysis**](Enrichment_analysis.md)
+- [**Monte Carlo Simulation**](Monte_Carlo_Simulation.md)
 - [**Whole genome bisulfite sequencing in HaCaT cells**](wgbs_hacat.md)
   - [Read processing, alignment and de-duplication](wgbs_hacat.md#read-processing-alignment-and-de-duplication)
   - [Methylation extraction, aggregation and filter by coverage](wgbs_hacat.md#methylation-extraction-aggregation-and-filter-by-coverage)
