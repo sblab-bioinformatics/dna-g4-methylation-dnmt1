@@ -13,7 +13,7 @@ All in-house the sequencing data have been deposited in the NCBI GEO database un
 | --------------- |:----------------------------------:| -------------------------------------------------------|
 | K562 DHSs       | DNase-seq                          | https://www.encodeproject.org/experiments/ENCSR000EPC/ |
 | K562 DNMT1      | ChIP-seq                           | https://www.encodeproject.org/experiments/ENCSR987PBI/ |
-| K562 WGBS       | whole genome bisulfite sequencing  | https://www.encodeproject.org/experiments/ENCSR765JPC/ |
+| K562 WGBS       | Whole Genome Bisulfite Sequencing  | https://www.encodeproject.org/experiments/ENCSR765JPC/ |
 
 CGI were downloaded using the UCSC’s table browser. Also, as an alternative CpG Island definition, we used [CpGCluster](http://bioinfo2.ugr.es:8080/CpGislandDB/)
 
