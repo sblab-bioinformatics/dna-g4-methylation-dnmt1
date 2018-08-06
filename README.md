@@ -19,13 +19,13 @@ All the sequencing data have been deposited in the NCBI GEO database under acces
 
 ### Tools 
 
-|Tool           | version  | URL (If available)                                            |
+|Tool           | version  | URL                                                           |
 | ------------- |:--------:| --------------------------------------------------------------|
-| cutadapt      | 1.15     |NA                                                             |
-| BWA           | 0.7.15   |NA                                                             |
+| cutadapt      | 1.15     |http://cutadapt.readthedocs.io/en/stable/installation.html     |
+| BWA           | 0.7.15   |http://bio-bwa.sourceforge.net/                                |
 | Picard        | 2.8.3    |http://broadinstitute.github.io/picard                         |
-| MACS          | 2.1.1    |NA                                                             |
+| MACS          | 2.1.1    |http://liulab.dfci.harvard.edu/MACS/                           |
 | Bedtools      | 2.26.0   |http://bedtools.readthedocs.io/en/latest/content/overview.html |
-| Deeptools     | 0.7.15   |NA                                                             |
-| Bismark       | 0.19.0   |NA                                                             |
+| Deeptools     | 0.7.15   |https://deeptools.readthedocs.io/                              |
+| Bismark       | 0.19.0   |https://www.bioinformatics.babraham.ac.uk/projects/bismark/    |
 
