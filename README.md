@@ -19,13 +19,14 @@ All the sequencing data have been deposited in the NCBI GEO database under acces
 
 ### Tools 
 
-|Tool           | version  | URL                                                           |
-| ------------- |:---------| --------------------------------------------------------------|
-| cutadapt      | 1.15     |http://cutadapt.readthedocs.io/en/stable/installation.html     |
-| BWA           | 0.7.15   |http://bio-bwa.sourceforge.net/                                |
-| Picard        | 2.8.3    |http://broadinstitute.github.io/picard                         |
-| MACS          | 2.1.1    |http://liulab.dfci.harvard.edu/MACS/                           |
-| Bedtools      | 2.26.0   |http://bedtools.readthedocs.io/en/latest/content/overview.html |
-| Deeptools     | 0.7.15   |https://deeptools.readthedocs.io/                              |
-| Bismark       | 0.19.0   |https://www.bioinformatics.babraham.ac.uk/projects/bismark/    |
+|Tool           | version                         | URL                                                           |
+| ------------- |:--------------------------------| --------------------------------------------------------------|
+| cutadapt      | 1.15                            |http://cutadapt.readthedocs.io/en/stable/installation.html     |
+| BWA           | 0.7.15                          |http://bio-bwa.sourceforge.net/                                |
+| Picard        | 2.8.3                           |http://broadinstitute.github.io/picard                         |
+| MACS          | 2.1.1                           |http://liulab.dfci.harvard.edu/MACS/                           |
+| Bedtools      | 2.26.0                          |http://bedtools.readthedocs.io/en/latest/content/overview.html |
+| Deeptools     | 0.7.15                          |https://deeptools.readthedocs.io/                              |
+| Bismark       | 0.19.0                          |https://www.bioinformatics.babraham.ac.uk/projects/bismark/    |
+| Liftover      | Accessed Aug 2017 to April 2018 |http://genome.ucsc.edu/cgi-bin/hgLiftOver                      |
 
