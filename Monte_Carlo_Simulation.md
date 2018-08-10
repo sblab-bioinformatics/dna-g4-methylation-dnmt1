@@ -13,6 +13,6 @@ The Monte Carlo P-value was calculated as (N+1)/(M+1), where M is the number of 
 Here is a more detailed explanation and the script used to calculate Monte Carlo P-value.
 
 ### Perl script 
-This is the perl script used to shuffle and overlap the sets on a computer cluster with SLURM scheduler.
+[This](OQS_DNMT_BG4_permutation_github.pl) is the perl script used to shuffle and overlap the sets on a computer cluster with SLURM scheduler.
 
 
