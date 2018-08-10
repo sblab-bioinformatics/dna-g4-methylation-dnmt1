@@ -7,3 +7,12 @@ We first counted how many BG4 peaks overlapped with OQSs in open chromatin (defi
 ## Monte Carlo P-value Calculation
 
 The Monte Carlo P-value was calculated as (N+1)/(M+1), where M is the number of iterations and N is the number of times the same or more overlaps were observed between randomised OQSs and high confidence DNMT1 peaks (compared to the number of overlaps observed between BG4 peaks and high confidence DNMT1 peaks). Randomisation was repeated for 8000 times and on average the number of overlaps between the shuffled OQSs and DNMT1 were two-fold less than those observed between BG4 and DNMT1 peaks.
+
+## Code
+
+Here is a more detailed explanation and the script used to calculate Monte Carlo P-value.
+
+### Perl script 
+This is the perl script used to shuffle and overlap the sets on a computer cluster with SLURM scheduler.
+
+
