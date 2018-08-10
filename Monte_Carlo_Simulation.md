@@ -25,3 +25,16 @@ So here is an example of how to run above perl script:
 ```
 perl OQS_DNMT_BG4_permutation.pl -set1 open_Na_K_G4.bed -set2 DNMT1_K562.bed -number 7491 -max 43506 -shuffD randomised_sets -overlD overlapping_bed_files
 ```
+
+Now that we have the overlapping bed files we shall count the number of overlaps observed in each randomised set:
+
+```
+wc -l overlapping_bed_files/* > number_of_overlaps.txt
+```
+
+To calculate Monte Carlo's P-value, we just need to find out how many of the randomised sets reach the same or more number of overlaps observed as it was observed between the BG4 and DNMT1 peaks files in K562 cell line, which was 400 overlaps:
+```
+awk '$1>399' number_of_overlaps.txt 
+```
+
+As out of 8000 iteration, we never observed equal or more overlaps than 400 then P-value = 1/8001 = 0.000125
