@@ -15,4 +15,13 @@ Here is a more detailed explanation and the script used to calculate Monte Carlo
 ### Perl script 
 [This](OQS_DNMT_BG4_permutation_github.pl) is the perl script used to shuffle and overlap the sets on a computer cluster with SLURM scheduler.
 
+Let us first clarify the question we are trying to answer with Monte Carlo Simulation. We are asking whether the overlap obswrved between the BG4 peaks and DNMT1 peaks in K562 cell line is statistically significant. to do this we need to randomly senect a number of regiongs from the total G4 structures in open chromatin to which DNMT1 may potentially bind. So set1 is the G4-seq detected sequences which coincide with an open chromatin region provided by DHS in K562. We call this set open_Na_K_G4.bed. Total number of regions in this file is provided through the option - max. Set2 should be DNMT1 peaks in K562 cell line, DNMT1_K562.bed. 
 
+The only option remained to run the above perl script is how many random regions to select from the whole set1, open_Na_K_G4.bed. This is basically the number of BG4 peaks which overlap any G4 sequences observed by G4-seq in open chromatin. That is 7491 peaks.
+
+We just need to provide two directories to the script, one for the shuffled or randomly selected regions, randomised_sets, and another directory for the overlapping bed files, overlapping_bed_files.
+
+So here is an example of how to run above perl script:
+```
+perl OQS_DNMT_BG4_permutation.pl -set1 open_Na_K_G4.bed -set2 DNMT1_K562.bed -number 7491 -max 43506 -shuffD randomised_sets -overlD overlapping_bed_files
+```
