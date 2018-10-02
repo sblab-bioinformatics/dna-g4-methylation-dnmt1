@@ -1,7 +1,7 @@
 
 ## DNA G-quadruplex structures mould the DNA methylome
 
-This repository contains data access and computational analysis for the methods developed in our manuscript *currently under revision*.
+This repository contains data access and computational analysis for the methods developed in our [published manuscript](https://www.nature.com/articles/s41594-018-0131-8).
 
 ### Data
 
